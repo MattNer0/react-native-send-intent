@@ -59,8 +59,10 @@ import okio.Okio;
 
 public class RNSendIntentModule extends ReactContextBaseJavaModule {
 
-    private static final int FILE_SELECT_CODE = 20190903;
-    private static final int DIRECTORY_SELECT_CODE = 20190904;
+    private static final int FILE_SELECT_CODE = 65501;
+    private static final int DIRECTORY_SELECT_CODE = 65502;
+
+    
     private static final String TAG = RNSendIntentModule.class.getSimpleName();
 
     private static final String TEXT_PLAIN = "text/plain";
@@ -792,12 +794,12 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openDirectoryPicker(ReadableMap options,Callback callback) {
+    public void openDirectoryPicker(Callback callback) {
       mCallback = callback;
       Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
       try {
           Activity currentActivity = getCurrentActivity();
-          currentActivity.startActivityForResult(Intent.createChooser(intent, options.getString("title")),DIRECTORY_SELECT_CODE);
+          currentActivity.startActivityForResult(intent,DIRECTORY_SELECT_CODE);
       } catch (android.content.ActivityNotFoundException ex) {
 
       }
@@ -853,10 +855,9 @@ public class RNSendIntentModule extends ReactContextBaseJavaModule {
               Uri uri = data.getData();
               mCallback.invoke(uri.getPath());
           } else if (requestCode == DIRECTORY_SELECT_CODE && data!=null) {
-              Uri treeUri = resultData.getData();
-              //DocumentFile pickedDir = DocumentFile.fromTreeUri(this, treeUri);
-              grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-              getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+              Uri treeUri = data.getData();
+              reactContext.grantUriPermission(reactContext.getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+              reactContext.getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
               mCallback.invoke(treeUri.getPath());
           }

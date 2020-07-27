@@ -108,8 +108,8 @@ var SendIntentAndroid = {
     openFilePicker({ type = "*/*", title = "Choose File" }, callback) {
         return RNSendIntentAndroid.openFilePicker({ type, title }, callback);
     },
-    openDirectoryPicker({title="Choose Directory"}, callback) {
-        return RNSendIntentAndroid.openDirectoryPicker({title}, callback);
+    openDirectoryPicker(callback) {
+        return RNSendIntentAndroid.openDirectoryPicker(callback);
     },
     openEmailApp() {
         RNSendIntentAndroid.openEmailApp();
